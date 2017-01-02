@@ -11,10 +11,17 @@ public class Background {
     private Bitmap background;
     private Rect src, dst;
 
-    public Background (mainView gameView, Bitmap bmp) {
+//    public Background (mainView gameView, Bitmap bmp) {
+//        background = bmp;
+//        src = new Rect(0, 0, background.getWidth(), background.getHeight());
+//        dst = new Rect(0, 0, gameView.getWidth(), gameView.getHeight());
+//    }
+
+    //TODO WJ
+    public Background (MainGamePanel gamePanel, Bitmap bmp) {
         background = bmp;
         src = new Rect(0, 0, background.getWidth(), background.getHeight());
-        dst = new Rect(0, 0, gameView.getWidth(), gameView.getHeight());
+        dst = new Rect(0, 0, gamePanel.getWidth(), gamePanel.getHeight());
     }
 
     public void onDraw (Canvas canvas) {

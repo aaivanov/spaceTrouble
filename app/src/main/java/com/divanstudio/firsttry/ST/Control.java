@@ -11,28 +11,46 @@ import android.graphics.Rect;
  */
 
 public class Control {
+    // Размерность элементов битмапа с рисунками кнопок
     private static final int BMP_ROWS = 1;
     private static final int BMP_COLUMNS = 4;
 
+    // Число элементов битмапа
     private int frameCount = 0;
 
-    private Bitmap control;
+    private Bitmap control;           // TODO SourceControlsBitmap
+
+    // Если будем рисовать сами свой контрол, то задаим раскраску
     private Paint paint;
+
+    // И текст, если будем писать текст контрола
     private String text;
 
+    // Откуда рисуем контрол
     private int canvX;  //convas coords
     private int canvY;  //convas coords
 
+    // Размер контрола
     private int width;
     private int height;
 
-    public Control(mainView gameView, Bitmap control, int frameCount, int canvX, int canvY) {
+//    public Control(mainView gameView, Bitmap control, int frameCount, int canvX, int canvY) {
+//        this.control = control;
+//        this.frameCount = frameCount;
+//        this.width = control.getWidth() / BMP_COLUMNS;
+//        this.height = control.getHeight() / BMP_ROWS;
+//        this.canvX = canvX;
+//        this.canvY = canvY + gameView.getHeight() - height * 5;
+//    }
+
+    //TODO WJ
+    public Control(MainGamePanel gamePanel, Bitmap control, int frameCount, int canvX, int canvY) {
         this.control = control;
         this.frameCount = frameCount;
         this.width = control.getWidth() / BMP_COLUMNS;
         this.height = control.getHeight() / BMP_ROWS;
         this.canvX = canvX;
-        this.canvY = canvY + gameView.getHeight() - height * 5;
+        this.canvY = canvY + gamePanel.getHeight() - height * 5;
     }
 
     public Control (int width, int height, int canvX, int canvY, String text) {
@@ -61,11 +79,17 @@ public class Control {
         }
     }
 
+    // Реакция на прикосновение пальцем к контролу
     public boolean isCollision(float touchEventX, float touchEventY) {
-        boolean isCollision = touchEventX > canvX
-                           && touchEventX < canvX + width
-                           && touchEventY > canvY
-                           && touchEventY < canvY + height;
-        return isCollision ;
+        //TODO Можно просто вернуть
+//        boolean isCollision = touchEventX > canvX
+//                           && touchEventX < canvX + width
+//                           && touchEventY > canvY
+//                           && touchEventY < canvY + height;
+//        return isCollision ;
+        return touchEventX > canvX
+                && touchEventX < canvX + width
+                && touchEventY > canvY
+                && touchEventY < canvY + height;
     }
 }

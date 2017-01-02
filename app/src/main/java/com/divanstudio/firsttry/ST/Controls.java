@@ -18,11 +18,23 @@ public class Controls {
 
     private State state;
 
-    Player player;
+    private Player player;
 
-    public Controls (mainView GameView, Bitmap bmp, Enemies meteors) {
-        Controls.add(new Control(GameView, bmp, 0, 30, 50));
-        Controls.add(new Control(GameView, bmp, 1, 30, 150));
+//    public Controls (mainView GameView, Bitmap bmp, Enemies meteors) {
+//        Controls.add(new Control(GameView, bmp, 0, 30, 50));
+//        Controls.add(new Control(GameView, bmp, 1, 30, 150));
+//        this.player = Player.getInstance();
+//        this.state = State.getInstance();
+//        menu = new Control(300, 50, 100, 100, "START");
+//        this.meteors = meteors;
+//
+//    }
+
+    //TODO WJ
+    // Создаёт кнопочку старта игры при создании контрола
+    public Controls (MainGamePanel gamePanel, Bitmap bmp, Enemies meteors) {
+        Controls.add(new Control(gamePanel, bmp, 0, 30, 50));
+        Controls.add(new Control(gamePanel, bmp, 1, 30, 150));
         this.player = Player.getInstance();
         this.state = State.getInstance();
         menu = new Control(300, 50, 100, 100, "START");
@@ -32,26 +44,32 @@ public class Controls {
 
     public void onDraw(Canvas canvas) {
         if(state.getState() != "Menu") {
+        //if(!state.getState().equals("Menu")) {
             for (Control control : Controls) {
                 control.onDraw(canvas);
             }
         }
         if (state.getState() == "Menu") {
+        //if (state.getState().equals("Menu")) {
             menu.onDraw(canvas);
         }
     }
 
+    // Обработка нажатий на контролы управления
     public void isCollision( MotionEvent event ) {
         switch ( event.getAction() ) {
-            case MotionEvent.ACTION_DOWN: // нажатие
+            case MotionEvent.ACTION_DOWN:             // нажатие
                 mouseEventHandler(event);
                 break;
-            case MotionEvent.ACTION_MOVE: //движение
+
+            case MotionEvent.ACTION_MOVE:             //движение
                 mouseEventHandler(event);
                 break;
-            case MotionEvent.ACTION_UP: //отпускание
+
+            case MotionEvent.ACTION_UP:               //отпускание
             case MotionEvent.ACTION_CANCEL:
                 if(state.getState() == "Menu") {
+                //if(state.getState().equals("Menu")) {
                     state.setState("Play");
                 } else {
                     meteors.moveStop();

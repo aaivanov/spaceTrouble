@@ -24,35 +24,58 @@ public class Enemy extends Sprite {
 
     private Random rnd;
 
-    public Enemy (mainView gameView, Bitmap origBmp, int frameCount) {
-        super(gameView, origBmp, frameCount, IMG_SIZE_COEFFICIENT, BMP_ROWS, BMP_COLUMNS);
+//    public Enemy (mainView gameView, Bitmap origBmp, int frameCount) {
+//        super(gameView, origBmp, frameCount, IMG_SIZE_COEFFICIENT, BMP_ROWS, BMP_COLUMNS);
+//        this.rnd = new Random();
+//        this.player = Player.getInstance();
+//        this.canvX = -renderWidth;
+//        this.pSpeed = player.getPlayerSpeed();
+//    }
+
+    //TODO WJ
+    public Enemy (MainGamePanel gamePanel, Bitmap origBmp, int frameCount) {
+        super(gamePanel, origBmp, frameCount, IMG_SIZE_COEFFICIENT, BMP_ROWS, BMP_COLUMNS);
         this.rnd = new Random();
         this.player = Player.getInstance();
         this.canvX = -renderWidth;
         this.pSpeed = player.getPlayerSpeed();
     }
 
-        /**Перемещение объекта, его направление*/
-        private void update()
-        {
-            if (canvX <= -renderWidth ) {
-                canvX = gameView.getWidth();
-                //canvY = rnd.nextInt(gameView.getHeight() - renderHeight);
-                canvY = 2*rnd.nextInt(gameView.getHeight()) - gameView.getHeight()/2;
-                xSpeed = -(rnd.nextInt(3) + 1) * gameView.getHeight() / 100 ;
-            }
-            canvX = canvX + xSpeed;
-            canvY = canvY + ySpeed;
-        }
+    /**Перемещение объекта, его направление*/
+//    private void update()
+//    {
+//        if (canvX <= -renderWidth ) {
+//            canvX = gameView.getWidth();
+//            //canvY = rnd.nextInt(gameView.getHeight() - renderHeight);
+//            canvY = 2*rnd.nextInt(gameView.getHeight()) - gameView.getHeight()/2;
+//            xSpeed = -(rnd.nextInt(3) + 1) * gameView.getHeight() / 100 ;
+//        }
+//        canvX = canvX + xSpeed;
+//        canvY = canvY + ySpeed;
+//    }
 
-        public boolean isCollision () {
-            return player.checkCollision(getHitBox());
+    //TODO WJ
+    //TODO не уверен, что это должно быть тут
+    private void update()
+    {
+        if (canvX <= -renderWidth ) {
+            canvX = gamePanel.getWidth();
+            //canvY = rnd.nextInt(gameView.getHeight() - renderHeight);
+            canvY = 2*rnd.nextInt(gamePanel.getHeight()) - gamePanel.getHeight()/2;
+            xSpeed = -(rnd.nextInt(3) + 1) * gamePanel.getHeight() / 100 ;
         }
+        canvX = canvX + xSpeed;
+        canvY = canvY + ySpeed;
+    }
 
-        public void onDraw(Canvas canvas) {
-            update();
-            super.onDraw(canvas, canvX, canvY);
-        }
+    public boolean isCollision () {
+        return player.checkCollision(getHitBox());
+    }
+
+    public void onDraw(Canvas canvas) {
+        update();
+        super.onDraw(canvas, canvX, canvY);
+    }
 
     public void moveUp () { ySpeed = -(int)pSpeed; }
 

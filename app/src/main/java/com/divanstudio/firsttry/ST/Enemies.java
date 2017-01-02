@@ -16,16 +16,37 @@ public class Enemies {
     private State state;
     private Paint paint;
 
-    public Enemies(mainView GameView, Bitmap bmp) {
+//    public Enemies(mainView GameView, Bitmap bmp) {
+//        this.state = State.getInstance();
+//        this.meteors.add(new Enemy(GameView, bmp, 0));
+//        this.meteors.add(new Enemy(GameView, bmp, 1));
+//        this.meteors.add(new Enemy(GameView, bmp, 2));
+//        this.meteors.add(new Enemy(GameView, bmp, 3));
+//        this.meteors.add(new Enemy(GameView, bmp, 0));  //TODO What is this?
+//        this.meteors.add(new Enemy(GameView, bmp, 1));  //
+//        this.meteors.add(new Enemy(GameView, bmp, 2));  //
+//        this.meteors.add(new Enemy(GameView, bmp, 3));  //
+//
+//        paint = new Paint();
+//
+//        paint.setColor(Color.RED);
+//        paint.setStrokeWidth(0);
+//        paint.setStyle(Paint.Style.STROKE);
+//
+//
+//    }
+
+    //TODO WJ
+    public Enemies(MainGamePanel gamePanel, Bitmap bmp) {
         this.state = State.getInstance();
-        this.meteors.add(new Enemy(GameView, bmp, 0));
-        this.meteors.add(new Enemy(GameView, bmp, 1));
-        this.meteors.add(new Enemy(GameView, bmp, 2));
-        this.meteors.add(new Enemy(GameView, bmp, 3));
-        this.meteors.add(new Enemy(GameView, bmp, 0));
-        this.meteors.add(new Enemy(GameView, bmp, 1));
-        this.meteors.add(new Enemy(GameView, bmp, 2));
-        this.meteors.add(new Enemy(GameView, bmp, 3));
+        this.meteors.add(new Enemy(gamePanel, bmp, 0));
+        this.meteors.add(new Enemy(gamePanel, bmp, 1));
+        this.meteors.add(new Enemy(gamePanel, bmp, 2));
+        this.meteors.add(new Enemy(gamePanel, bmp, 3));
+        this.meteors.add(new Enemy(gamePanel, bmp, 0));  //TODO What is this?
+        this.meteors.add(new Enemy(gamePanel, bmp, 1));  //
+        this.meteors.add(new Enemy(gamePanel, bmp, 2));  //
+        this.meteors.add(new Enemy(gamePanel, bmp, 3));  //
 
         paint = new Paint();
 

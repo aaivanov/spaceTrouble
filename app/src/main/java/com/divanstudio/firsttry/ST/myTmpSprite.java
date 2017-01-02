@@ -15,7 +15,11 @@ public class myTmpSprite {
     /**Колонок в спрайте = 3*/
     private static final int BMP_COLUMNS = 3;
 
-    private mainView gameView;
+//    private mainView gameView;
+
+    //TODO WJ
+    private MainGamePanel gamePanel;
+
     private Bitmap bmp;
 
     private int x = 5;
@@ -29,9 +33,22 @@ public class myTmpSprite {
     private int width;
     private int height;
 
-    public myTmpSprite(mainView gameView, Bitmap bmp)
+//    public myTmpSprite(mainView gameView, Bitmap bmp)
+//    {
+//        this.gameView = gameView;
+//        this.bmp = bmp;
+//        this.width = bmp.getWidth() / BMP_COLUMNS;
+//        this.height = bmp.getHeight() / BMP_ROWS;
+//
+//        Random rnd = new Random();
+//        xSpeed = rnd.nextInt(10)-5;
+//        ySpeed = rnd.nextInt(10)-5;
+//    }
+
+    //TODO WJ
+    public myTmpSprite(MainGamePanel gamePanel, Bitmap bmp)
     {
-        this.gameView = gameView;
+        this.gamePanel = gamePanel;
         this.bmp = bmp;
         this.width = bmp.getWidth() / BMP_COLUMNS;
         this.height = bmp.getHeight() / BMP_ROWS;
@@ -42,16 +59,35 @@ public class myTmpSprite {
     }
 
     /**Перемещение объекта, его направление*/
+//    private void update()
+//    {
+//        if (x >= gameView.getWidth() - width - xSpeed || x + xSpeed <= 0)
+//        {
+//            xSpeed = -xSpeed;
+//        }
+//
+//        x = x + xSpeed;
+//
+//        if (y >= gameView.getHeight() - height - ySpeed || y + ySpeed <= 0)
+//        {
+//            ySpeed = -ySpeed;
+//        }
+//
+//        y = y + ySpeed;
+//        currentFrame = ++currentFrame % BMP_COLUMNS;
+//    }
+
+    //TODO WJ
     private void update()
     {
-        if (x >= gameView.getWidth() - width - xSpeed || x + xSpeed <= 0)
+        if (x >= gamePanel.getWidth() - width - xSpeed || x + xSpeed <= 0)
         {
             xSpeed = -xSpeed;
         }
 
         x = x + xSpeed;
 
-        if (y >= gameView.getHeight() - height - ySpeed || y + ySpeed <= 0)
+        if (y >= gamePanel.getHeight() - height - ySpeed || y + ySpeed <= 0)
         {
             ySpeed = -ySpeed;
         }
@@ -81,8 +117,9 @@ public class myTmpSprite {
     }
 
     public boolean isCollision(float x2, float y2) {
-
-        boolean isCollision = x2 > x && x2 < x + width && y2 > y && y2 < y + height;
-        return isCollision ;
+        //TODO Вернуть сразу
+//        boolean isCollision = x2 > x && x2 < x + width && y2 > y && y2 < y + height;
+//        return isCollision ;
+        return x2 > x && x2 < x + width && y2 > y && y2 < y + height;
     }
 }

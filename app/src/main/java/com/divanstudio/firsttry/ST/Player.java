@@ -39,15 +39,32 @@ public class Player extends Sprite{
         return  localInstance;
     }
 
-    public void setPlayerData (mainView gameView, Bitmap origBmp) {
-        super.setSpriteData(gameView, origBmp, 0, IMG_SIZE_COEFFICIENT, BMP_ROWS, BMP_COLUMNS);
-        this.x = gameView.getWidth() / 3;
-        this.y = ( gameView.getHeight() - renderHeight) / 2;
-        this.pSpeed = gameView.getHeight() / 100 * SPEED_COEFFICIENT;
+//    public void setPlayerData (mainView gameView, Bitmap origBmp) {
+//        super.setSpriteData(gameView, origBmp, 0, IMG_SIZE_COEFFICIENT, BMP_ROWS, BMP_COLUMNS);
+//        this.x = gameView.getWidth() / 3;
+//        this.y = ( gameView.getHeight() - renderHeight) / 2;
+//        this.pSpeed = gameView.getHeight() / 100 * SPEED_COEFFICIENT;
+//    }
+
+    //TODO WJ
+    public void setPlayerData (MainGamePanel gamePanel, Bitmap origBmp) {
+        super.setSpriteData(gamePanel, origBmp, 0, IMG_SIZE_COEFFICIENT, BMP_ROWS, BMP_COLUMNS);
+        this.x = gamePanel.getWidth() / 3;
+        this.y = ( gamePanel.getHeight() - renderHeight) / 2;
+        this.pSpeed = gamePanel.getHeight() / 100 * SPEED_COEFFICIENT;
     }
 
+//    private void update() {
+//        if (y >= gameView.getHeight() - renderHeight - ySpeed || y + ySpeed < 0) {
+//            ySpeed = 0;
+//        }
+//
+//        y = y + (int) ySpeed;
+//    }
+
+    //TODO WJ
     private void update() {
-        if (y >= gameView.getHeight() - renderHeight - ySpeed || y + ySpeed < 0) {
+        if (y >= gamePanel.getHeight() - renderHeight - ySpeed || y + ySpeed < 0) {
             ySpeed = 0;
         }
 
@@ -55,7 +72,8 @@ public class Player extends Sprite{
     }
 
     public void onDraw(Canvas canvas) {
-        if(state.getState() == "Play") {
+        if(state.getState() == "Play") { //TODO equals()
+        //if(state.getState().equals("Play")) {
             update();
             super.onDraw(canvas, x, y);
         } else {
@@ -74,10 +92,12 @@ public class Player extends Sprite{
     public void moveStop () { ySpeed = 0; }
 
     public boolean isMove () {
-        if (ySpeed == 0) {
-            return false;
-        } else {
-            return true;
-        }
+        //TODO упростил
+//        if (ySpeed == 0) {
+//            return false;
+//        } else {
+//            return true;
+//        }
+        return ySpeed != 0;
     }
 }

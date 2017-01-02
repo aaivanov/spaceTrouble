@@ -94,6 +94,30 @@ public class hitBox {
         Point b;
         boolean isCollision = false;
 
+        //TODO Некорректный возврат значения функции. Заменить на true|false.
+        //TODO Либо сделать адекватную обработку isCollision
+        //OLD
+//        for (int j = 0; j < hitBox.size(); j++) {
+//            if ( j == hitBox.size() - 1 ) {
+//                a = hitBox.get(j);
+//                b = hitBox.get(0);
+//            } else {
+//                a = hitBox.get(j);
+//                b = hitBox.get(j + 1);
+//            }
+//            for (int i = 0; i < apexListOnScrn.size(); i++) {
+//                if ( i == apexListOnScrn.size() - 1 ) {
+//                    isCollision = check(apexListOnScrn.get(i), apexListOnScrn.get(0), a, b);
+//                } else {
+//                    isCollision = check(apexListOnScrn.get(i), apexListOnScrn.get(i + 1), a, b);
+//                }
+//                if (isCollision) {
+//                    return isCollision;
+//                }
+//            }
+//        }
+//        return isCollision;
+        //NEW
         for (int j = 0; j < hitBox.size(); j++) {
             if ( j == hitBox.size() - 1 ) {
                 a = hitBox.get(j);
@@ -108,11 +132,20 @@ public class hitBox {
                 } else {
                     isCollision = check(apexListOnScrn.get(i), apexListOnScrn.get(i + 1), a, b);
                 }
-                if (isCollision == true) {
-                    return isCollision;
+
+                // Выход из цикла по i
+                if (isCollision) {
+                    break;
                 }
             }
+
+            // Выход из цикла по j
+            if (isCollision) {
+                break;
+            }
         }
+
+        // Возвращаем результат
         return isCollision;
     }
 
@@ -135,9 +168,9 @@ public class hitBox {
 
     public boolean check(Point a1n, Point a2n, Point b1n, Point b2n) {
         Point a1, a2, b1;
-        a1 = new Point( a1n.x - b2n.x, a1n.y - b2n.y );
-        a2 = new Point( a2n.x - b2n.x, a2n.y - b2n.y );
-        b1 = new Point( b1n.x - b2n.x, b1n.y - b2n.y );
+        a1 = new Point(a1n.x - b2n.x, a1n.y - b2n.y);
+        a2 = new Point(a2n.x - b2n.x, a2n.y - b2n.y);
+        b1 = new Point(b1n.x - b2n.x, b1n.y - b2n.y);
 
         /*long v1 = (b2.x-b1.x)*(a1.y-b1.y)-(b2.y-b1.y)*(a1.x-b1.x);
           long v2 = (b2.x-b1.x)*(a2.y-b1.y)-(b2.y-b1.y)*(a2.x-b1.x);
@@ -146,12 +179,15 @@ public class hitBox {
 
         long v1 = b1.y * a1.x - b1.x * a1.y;
         long v2 = b1.y * a2.x - b1.x * a2.y;
-        long v3 = (a2.x - a1.x)*(b1.y - a1.y) - (a2.y - a1.y)*(b1.x - a1.x);
+        long v3 = (a2.x - a1.x) * (b1.y - a1.y) - (a2.y - a1.y) * (b1.x - a1.x);
         long v4 = a2.y * a1.x - a2.x * a1.y;
 
-        if ( v1*v2 < 0 &&  v3*v4 < 0) {
-            return true;
-        }
-        return false;
+        //TODO можно просто вернуть это выражение
+//        if ( v1*v2 < 0 && v3*v4 < 0) {
+//            return true;
+//        }
+//
+//        return false;
+        return v1 * v2 < 0 && v3 * v4 < 0;
     }
 }
