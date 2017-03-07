@@ -37,7 +37,7 @@ public class mainView extends SurfaceView  {
         player = Player.getInstance();
         holder = getHolder();
 
-        mediaPlayer = MediaPlayer.create(context, R.raw.gameplay);
+        mediaPlayer = MediaPlayer.create(context, R.raw.asteroids);
         mediaPlayer.setLooping(true); // Set looping
         mediaPlayer.setVolume(100,100);
 

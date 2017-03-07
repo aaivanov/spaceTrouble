@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.Button;
 
 import com.example.divanstudio.firsttry.R;
 
@@ -24,10 +25,8 @@ public class GameMenu extends GameControl {
     private List<GameButton> Buttons = new ArrayList<>(); // Список кнопок в меню
 
     private String MenuDirection = "left";                // Направление расположения контролов
-    private int distance = 5;                             // Дистанция между контролами в px
 
-    // TODO Я не знаю какой тип переменной лучше
-    private String touchTypes = "UP";
+    private int distance = 5;                             // Дистанция между контролами в px
 
     private static final String TAG = GameMenu.class.getSimpleName();
 
@@ -66,10 +65,7 @@ public class GameMenu extends GameControl {
                         sourceExitButton.getWidth(),
                         sourceExitButton.getHeight(),
                         "Exit_Button",
-                        "Exit",
-                        context,
-                        State.getInstance(),
-                        null
+                        "Exit"
                 )
         );
 
@@ -83,7 +79,6 @@ public class GameMenu extends GameControl {
         }
 
         // Добавляем новую кнопку
-        // TODO Рисуется от точки xy до x1y1. а не по длине.
         this.Buttons.add(
                 new GameButton(
                         sourceStartButton,
@@ -92,10 +87,7 @@ public class GameMenu extends GameControl {
                         sourceStartButton.getWidth(),
                         sourceStartButton.getHeight(),
                         "Start_Button",
-                        "Play",
-                        context,
-                        State.getInstance(),
-                        null
+                        "Play"
                 )
         );
 
@@ -104,11 +96,11 @@ public class GameMenu extends GameControl {
 
     // Конструктор меню с выстраиваемыми кнопками
     public GameMenu(
-            mainView gamePanel,
-            Context context,
+//            mainView gamePanel,
+//            Context context,
             List<GameButton> GameButtons,
             String MenuDirection,
-            String menuToucheTypes,
+            String align,
             int distance,
             int canv_x,
             int canv_y,
@@ -124,17 +116,25 @@ public class GameMenu extends GameControl {
 
         this.MenuDirection = MenuDirection;
         this.distance      = distance;
-        this.touchTypes    = menuToucheTypes;
 
         // Добавление кнопок в меню
-        // Необходимо учесть параметры меню и расположить кнопки как надо
+        // Чтобы выровнять кнопки по направлению расположения их в меню,
+        // нужно определить кнопку с максимальной шириной или высотой.
+        int max_width = 0;
+        int max_height = 0;
+        for (GameButton Button : GameButtons) {
+            if (max_width < Button.getBitmap().getWidth()){
+                max_width = Button.getBitmap().getWidth();
+            }
+
+            if (max_height < Button.getBitmap().getHeight()){
+                max_height = Button.getBitmap().getHeight();
+            }
+        }
         // Кнопки выстраиваем от координат контрола меню
         // Дистанцию между кнопками расчитываем от первой кнопки
         GameButton firstButton = GameButtons.get(0);
 
-        // Первую кнопку рисуем в ту сторону, куда указывает параметр MenuDirection
-        // Например, если у меню начало координат 0, 0 и направление меню "left",
-        // то начало координат кнопки сдивигается влево на длину этой кнопки
         int button_canv_x = 0;
         int button_canv_y = 0;
         int button_width  = 0;
@@ -148,24 +148,66 @@ public class GameMenu extends GameControl {
             button_height = firstButton.getActivity_h();
         }
 
+        // Первую кнопку рисуем в ту сторону, куда указывает параметр MenuDirection
+        // Например, если у меню начало координат 0, 0 и направление меню "left",
+        // то начало координат кнопки сдивигается влево на длину этой кнопки.
+        // Так же учтём выравнивание.
+        // Если нужно выравнивать по центру, к координате Y кнопки нужно прибавить нужный отступ,
+        // Который высчитвыается от max_width и max_height.
         if ((this.MenuDirection.toLowerCase().equals("left"))) {
             button_canv_x = this.getX() - button_width;
             button_canv_y = this.getY();
+
+            // В этом случае выравниваем кнопку по высоте
+            if (align.toLowerCase().equals("center")) {
+                button_canv_y += (max_height - button_height)/2;
+            }
+
+            if (align.toLowerCase().equals("bottom")) {
+                button_canv_y += max_height - button_height;
+            }
         }
 
         if ((this.MenuDirection.toLowerCase().equals("up"))) {
             button_canv_x = this.getX();
             button_canv_y = this.getY() - button_height;
+
+            // В этом случае выравниваем кнопку по ширине
+            if (align.toLowerCase().equals("center")) {
+                button_canv_x += (max_width - button_width)/2;
+            }
+
+            if (align.toLowerCase().equals("right")) {
+                button_canv_x += max_width - button_width;
+            }
         }
 
         if ((this.MenuDirection.toLowerCase().equals("right"))) {
             button_canv_x = this.getX();
             button_canv_y = this.getY();
+
+            // В этом случае выравниваем кнопку по высоте
+            if (align.toLowerCase().equals("center")) {
+                button_canv_y += (max_height - button_height)/2;
+            }
+
+            if (align.toLowerCase().equals("bottom")) {
+                button_canv_y += max_height - button_height;
+            }
         }
 
         if ((this.MenuDirection.toLowerCase().equals("down"))) {
             button_canv_x = this.getX();
             button_canv_y = this.getY();
+
+            // В этом случае выравниваем кнопку по ширине
+            if (align.toLowerCase().equals("center")) {
+                button_canv_x += (max_width - button_width)/2;
+            }
+
+            if (align.toLowerCase().equals("right")) {
+                button_canv_x += max_width - button_width;
+            }
         }
 
         firstButton.setX(button_canv_x);
@@ -202,28 +244,59 @@ public class GameMenu extends GameControl {
                 next_button_height = Button.getActivity_h();
             }
 
-            // Если меню рисуем влево, то кнопка рисуется через свою ширину и дистанцию
+            // Рисуем кнопки. Для этого перессчитываем нужную координату,
+            // учитывая дистанцию между кнопками и направление.
+            // Вторая координата отвечает за выравнивание. Её пересчитываем согласно максимальной
             if ((this.MenuDirection.toLowerCase().equals("left"))) {
                 next_button_canv_x = prevButton.getX() - this.distance - next_button_width;
-                next_button_canv_y = prevButton.getY();
+                next_button_canv_y = this.getY();
+
+                if (align.toLowerCase().equals("center")) {
+                    next_button_canv_y += (max_height - next_button_height)/2;
+                }
+
+                if (align.toLowerCase().equals("bottom")) {
+                    next_button_canv_y += max_height - next_button_height;
+                }
             }
 
-            // Если меню рисуем вверх, то кнопка рисуется через свою высоту и дистанцию
             if ((this.MenuDirection.toLowerCase().equals("up"))) {
-                next_button_canv_x = prevButton.getX();
+                next_button_canv_x = this.getX();
                 next_button_canv_y = prevButton.getY() - this.distance - next_button_height;
+
+                if (align.toLowerCase().equals("center")) {
+                    next_button_canv_x += (max_width - next_button_width)/2;
+                }
+
+                if (align.toLowerCase().equals("right")) {
+                    next_button_canv_x += max_width - next_button_width;
+                }
             }
 
-            // Рисуем вправо - кнопка рисуется через ширину пред. кнопки и через дистанцию
             if ((this.MenuDirection.toLowerCase().equals("right"))) {
                 next_button_canv_x = prevButton.getX() + this.distance + prev_button_width;
-                next_button_canv_y = prevButton.getY();
+                next_button_canv_y = this.getY();
+
+                if (align.toLowerCase().equals("center")) {
+                    next_button_canv_y += (max_height - next_button_height)/2;
+                }
+
+                if (align.toLowerCase().equals("bottom")) {
+                    next_button_canv_y += max_height - next_button_height;
+                }
             }
 
-            // Рисуем вниз - кнопка рисуется через высоту пред. кнопки и через дистанцию
             if ((this.MenuDirection.toLowerCase().equals("down"))) {
-                next_button_canv_x = prevButton.getX();
+                next_button_canv_x = this.getX();
                 next_button_canv_y = prevButton.getY() + this.distance + prev_button_height;
+
+                if (align.toLowerCase().equals("center")) {
+                    next_button_canv_x += (max_width - next_button_width)/2;
+                }
+
+                if (align.toLowerCase().equals("right")) {
+                    next_button_canv_x += max_width - next_button_width;
+                }
             }
 
             Button.setX(next_button_canv_x);
@@ -231,7 +304,6 @@ public class GameMenu extends GameControl {
 
             // Добавляем кнопку в меню
             this.Buttons.add(Button);
-            Log.i(TAG,"Button '" + Button.getName() + "' added to menu.");
 
             // Переприсваиваем обработанную кнопку
             prevButton = Button;
@@ -250,7 +322,7 @@ public class GameMenu extends GameControl {
      * Модификация меню
      */
     // Вставить кнопку в меню
-    public void pushButton(GameButton Button){ this.Buttons.remove(Button); }
+    public void pushButton(GameButton Button){ this.Buttons.add(Button); }
 
 
     // Удалить кнопку из меню
@@ -273,24 +345,16 @@ public class GameMenu extends GameControl {
             // Каждую кнопку списка рисуем на экране
             for (GameButton Button : this.Buttons){
                 Button.onDraw(canvas);
-                Log.i(TAG,"Button " + Button.getName() + " drew.");
             }
         }
     }
 
 
-    /*
-     * Обработка событий с кнопками меню
-     */
-    public void menuHandler(MotionEvent event){
-        if (this.Buttons != null) {
-            // Каждую кнопку списка анализируем на прикосновение и заставляем реагировать
-            for (GameButton Button : this.Buttons){
-                Button.onTouch(event, this.touchTypes);
-
-                //TODO Нужно придумать, как блокировать другие кнопки, если одна уже нажата
-                //TODO нужно придумать, как прерывать циклы обработки кнопок при разных реакциях
-            }
+    public GameButton getTouchedButton(MotionEvent event) {
+        for (GameButton Button : this.Buttons) {
+            if (Button.isPressed(event)) return Button;
         }
+
+        return null;
     }
 }

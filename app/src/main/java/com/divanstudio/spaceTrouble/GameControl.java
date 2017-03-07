@@ -10,13 +10,7 @@ import java.util.Hashtable;
  * Created by WJ_DDA on 29.09.2016.
  */
 
-//TODO Более общее название класса контрола Control - занято.
-//TODO Наследовать от mainView?
 public class GameControl {
-    //TODO Если много панелей игры будет, надо добавить
-    //private MainGamePanel gamePanel; // Игровая панель, к которой принадлежит контрол
-    //private Bitmap ControlBitmap;    // Картинка контрола
-
     private int draw_point_x;          // Координата Х точки отображения контрола
     private int draw_point_y;          // Координата Y точки отображения контрола
 
@@ -223,10 +217,6 @@ public class GameControl {
             int new_indent_r,
             int new_indent_b
     ) {
-        /*
-         *
-         */
-
         // Если -1, по-умолчанию берём правый край экрана с отступом 50 пикселей
         if (canv_new_x == -1) {
             canv_new_x = newGamePanel.getWidth() - 50;
@@ -289,17 +279,4 @@ public class GameControl {
                 && touchEventY > draw_point_y
                 && touchEventY < draw_point_y + activity_height;
     }
-
-
-    /*
-     * Рисование контрола на экране игры
-     */
-//    public void onDraw(Canvas canvas) {
-//        canvas.drawBitmap(control, src, dst, null);
-//    }
-
-
-    /*
-     * Деструкция?
-     */
 }

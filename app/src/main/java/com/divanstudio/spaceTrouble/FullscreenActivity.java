@@ -38,6 +38,8 @@ public class FullscreenActivity extends Activity implements OnTouchListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         mv = new mainView(this);
         setContentView(mv);
+
+        // Что это? Зачем это?
         mv.setOnTouchListener(this);
 
         Log.i(TAG,"Main activity created.");
@@ -45,6 +47,7 @@ public class FullscreenActivity extends Activity implements OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        // Что это? Зачем это?
         mv.setTouchEvent(event);
         return true;
     }

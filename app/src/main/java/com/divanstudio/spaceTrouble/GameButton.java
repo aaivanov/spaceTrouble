@@ -30,15 +30,9 @@ public class GameButton extends GameControl {
     // TODO возможно - новый класс или константы реакций кнопок
     private String reaction = "";            // Реакция кнопки. Её задача при нажатии.
 
-    // Объекты на которые назначаются реакции кнопок
-    private FullscreenActivity mainActivity;
-    private State mainState;
-    private Enemies mainEnemies;
-
     private static final String TAG = GameButton.class.getSimpleName();
 
     // Конструктор по-умолчанию
-    // TODO Как избавится от gamePanel?
     public GameButton(mainView gamePanel) {
         /*
          * По умолчанию будем создавать кнопку выхода из игры )
@@ -73,10 +67,7 @@ public class GameButton extends GameControl {
             int indent_r,
             int indent_b,
             String Name,
-            String Reaction,
-            Context gameActivity,
-            State gameState,
-            Enemies gameObjects
+            String Reaction
     ) {
         super(canv_x, canv_y, activity_w, activity_h, indent_l, indent_t, indent_r, indent_b);
 
@@ -85,10 +76,6 @@ public class GameButton extends GameControl {
         this.buttonName   = Name;
 
         this.reaction     = Reaction;
-
-        this.mainActivity = (FullscreenActivity) gameActivity;
-        this.mainState    = gameState;
-        this.mainEnemies  = gameObjects;
     }
 
 
@@ -100,10 +87,7 @@ public class GameButton extends GameControl {
             int activity_w,
             int activity_h,
             String Name,
-            String Reaction,
-            Context gameActivity,
-            State gameState,
-            Enemies gameObjects
+            String Reaction
     ) {
         super(canv_x, canv_y, activity_w, activity_h);
 
@@ -112,10 +96,6 @@ public class GameButton extends GameControl {
         this.buttonName   = Name;
 
         this.reaction     = Reaction;
-
-        this.mainActivity = (FullscreenActivity) gameActivity;
-        this.mainState    = gameState;
-        this.mainEnemies  = gameObjects;
     }
 
 
@@ -124,9 +104,7 @@ public class GameButton extends GameControl {
             Bitmap bitmapSource,
             int canv_x,
             int canv_y,
-            String Reaction,
-            FullscreenActivity gameActivity,
-            Enemies gameObjects
+            String Reaction
             ) {
         super(canv_x, canv_y, bitmapSource.getWidth(), bitmapSource.getHeight(), 0, 0, 0 ,0);
 
@@ -135,15 +113,10 @@ public class GameButton extends GameControl {
         this.buttonName   = button_id + "_Button";
 
         this.reaction     = Reaction;
-
-        this.mainActivity = gameActivity;
-        this.mainState    = State.getInstance();
-        this.mainEnemies  = gameObjects;
     }
 
 
     // Конструктор с рисованием кнопки
-    // TODO эту функцию надо расширять и дорабатывать
     public GameButton(
             int canv_x,
             int canv_y,
@@ -154,10 +127,7 @@ public class GameButton extends GameControl {
             int indent_r,
             int indent_b,
             String Text,
-            String Reaction,
-            FullscreenActivity gameActivity,
-            State gameState,
-            Enemies gameObjects
+            String Reaction
     )
     {
         super(canv_x, canv_y, width, height, indent_l, indent_t, indent_r, indent_b);
@@ -207,16 +177,11 @@ public class GameButton extends GameControl {
         // Конструируем контрол
         this.sourceBitmap = controlBitmap;
 
-        // TODO не зенаю какой ID. Возможно он генерируется (на то похоже из Гуглирования)
         this.button_id = controlBitmap.getGenerationId();
 
         this.buttonName = button_id + "_Button";
 
         this.reaction   = Reaction;
-
-        this.mainActivity = gameActivity;
-        this.mainState    = gameState;
-        this.mainEnemies  = gameObjects;
     }
 
 
@@ -233,11 +198,7 @@ public class GameButton extends GameControl {
             int indent_r,
             int indent_b,
             String newName,
-            String Reaction,
-            FullscreenActivity newActivity,
-            State newState,
-            Enemies newObjects
-
+            String Reaction
     ) {
         /*
          *
@@ -263,10 +224,6 @@ public class GameButton extends GameControl {
         this.buttonName = newName;
 
         this.reaction   = Reaction;
-
-        this.mainActivity = newActivity;
-        this.mainState    = newState;
-        this.mainEnemies  = newObjects;
     }
 
     /*
@@ -345,128 +302,5 @@ public class GameButton extends GameControl {
     public boolean isPressed (MotionEvent event) {
         Log.d(TAG, String.format("Button %s isCollision - %s", this.getName(), this.isCollision(event.getX(), event.getY())));
         return this.isCollision(event.getX(), event.getY());
-    }
-
-
-    // Обработчик нажатия кнопки при разных состояниях события тачпада.
-    // TODO Кнопки управления имеют реакцию только при ACTION DOWN и ACTION_MOVE надо сделать
-    public void onTouch(MotionEvent event, String touchTypes) {
-        switch ( event.getAction() ) {
-            case MotionEvent.ACTION_DOWN:         // нажатие на тачпад - нажатие на кнопку
-                if (touchTypes.contains("DOWN")) {
-                    if (this.isPressed(event)) {
-                        // TODO Анимация нажатой кнопки без реакции
-                        Log.i(TAG, "Button " + this.getName() + " touch DOWN");
-
-                        onClick(this.mainActivity, this.mainState, this.mainEnemies);
-                    }
-                }
-                break;
-
-            case MotionEvent.ACTION_MOVE:         // движение по тачпаду - тоже считается нажатием
-                if (touchTypes.contains("MOVE")) {
-                    if (this.isPressed(event)) {
-                        // TODO Анимация нажатой кнопки остаётся, реакция не следует
-                        Log.i(TAG, "Button " + this.getName() + " touch MOVE");
-
-                        onClick(this.mainActivity, this.mainState, this.mainEnemies);
-                    }
-                }
-                break;
-
-            case MotionEvent.ACTION_UP:           // отжатие от тачпада - кнопка не нажата
-                if (touchTypes.contains("UP")) {
-                    if (this.isPressed(event)) {
-                        // TODO Анимация отжатой кнопки
-                        // TODO Реакция кнопки
-                        Log.i(TAG, "Button " + this.getName() + " touch UP");
-                        Log.i(TAG, "Button " + this.getName() + " pressed and do " + this.getReaction());
-
-                        onClick(this.mainActivity, this.mainState, this.mainEnemies);
-                    }
-                }
-                break;
-
-            case MotionEvent.ACTION_CANCEL:       // TODO Пока хз как обработать
-                if (touchTypes.contains("CANCEL")) {
-                    if (this.isPressed(event)) {
-                        //TODO Что-то
-                        Log.i(TAG, "Button " + this.getName() + " touch CANCEL");
-
-                        onClick(this.mainActivity, this.mainState, this.mainEnemies);
-                    }
-                }
-                break;
-        }
-    }
-
-
-    // TODO Куда тебя поместить то? Как тебя сделать круче и по java канону?
-    // Нужно определять этот метод только для созданной кнопки. И в нём конкретные действя
-
-    // Список реакций кнопок
-    public void onClick(FullscreenActivity gameActivity, State gameState, Enemies gameObjects) {
-        switch (this.reaction) {
-            // Activity manager
-            case "Exit":
-                gameState.setState("Exit");
-
-                // TODO Ошибка приложения.
-                // Вероятно во время завершения активности надо ещё что-то делать.
-                // Например, останавливать Главный Тред.
-                // Ещё иногда тормоза в игре не сразу включают эту реакцию кнопки
-                // Пример ошибки:
-                // E/AndroidRuntime: FATAL EXCEPTION: Thread-230
-                // java.lang.NullPointerException
-                // at com.divanstudio.spaceTrouble.Background.onDraw(Background.java:21)
-                // at com.divanstudio.spaceTrouble.mainView.onDraw(mainView.java:83)
-                // at com.divanstudio.spaceTrouble.mainManager.run(mainManager.java:65)
-                gameActivity.finish();
-                break;
-
-            // Game Manager
-            case "Menu":
-                gameState.setState("Menu");
-                break;
-            case "Play":
-            case "Start":
-                gameState.setState("Play");
-                break;
-            case "Pause":
-                //<gameActivity.onStop();>
-                //gameState.setState("Pause");
-                break;
-            case "Resume":
-                //<gameActivity.onResume();>
-                //gameState.setState("Play");
-                break;
-
-            // Game Objects Manager
-            // TODO CHECKPOINT Затык. Метеориты двигаются и не останавливаются. Как исправить?
-            // TODO Как то нужно сделать грамотные названия кнопок из кусков битмапа
-            case "MoveShipUp":
-            case "Player_Move_0":
-                gameObjects.moveDown();
-                break;
-            case "MoveShipDown":
-            case "Player_Move_1":
-                gameObjects.moveUp();
-                break;
-
-            // Game Options Manager
-            case "SoundOff":
-                //gameOptions["Sound"].set("Off");
-                break;
-            case "SoundOn":
-                //gameOptions["Sound"].set("On");
-                break;
-            case "MusicOff":
-                //gameOptions["Music"].set("Off");
-                break;
-            case "MusicOn":
-                //gameOptions["Music"].set("On");
-                break;
-
-        }
     }
 }

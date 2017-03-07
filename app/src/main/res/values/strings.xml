@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">firstTRY</string>
 
+    <string name="game">Game Screen</string>
+    <string name="menu">Menu Screen</string>
+
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="title_activity_main_menu">MainMenuActivity</string>
 </resources>
