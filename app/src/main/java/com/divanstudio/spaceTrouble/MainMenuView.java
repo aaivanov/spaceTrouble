@@ -55,9 +55,9 @@ public class MainMenuView extends SurfaceView {
         this.musicPlayer.setVolume(this.music_volume, this.music_volume);
 
         // Создаём плеер звуков
-        // STREAM_MUSIC позволяет настраивать громкость воспроизведения
+        // STREAM_MUSIC позволяет настраивать громкость воспроизведения, привязанную к
+        // основной настройке девайса
         this.soundPoolPlayer = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
-//        this.soundPoolPlayer.setOnLoadCompleteListener(context);
 
         try {
             this.soundIDs.add(this.soundPoolPlayer.load(context, R.raw.menu_select_start, 1));
@@ -153,15 +153,15 @@ public class MainMenuView extends SurfaceView {
         );
 
         // Добавление кнопок в список. Порядок добавления важен.
-        List<GameButton> mainMenuButtons = new ArrayList<>();
+        List<GameControl> mainMenuButtons = new ArrayList<>();
         mainMenuButtons.add(startMenuButton);
         mainMenuButtons.add(optionsMenuButton);
         mainMenuButtons.add(exitMenuButton);
 
         String menuDirection = "down";
-        String buttonAlign   = "center";
+        String controlAlign   = "center";
 
-        int button_distance      = 20;
+        int control_distance      = 20;
         int menu_canv_x          = this.getWidth() / 2;
         int menu_canv_y          = this.getHeight() / 2;
         int menu_activity_width  = 0;
@@ -174,8 +174,8 @@ public class MainMenuView extends SurfaceView {
         this.mainMenu = new GameMenu(
                 mainMenuButtons,
                 menuDirection,
-                buttonAlign,
-                button_distance,
+                controlAlign,
+                control_distance,
                 menu_canv_x,
                 menu_canv_y,
                 menu_activity_width,
@@ -205,10 +205,9 @@ public class MainMenuView extends SurfaceView {
 
 
     // Установка события при прикосновении
-    // TODO ЧЕКПОИНТ! Громкость звуков громкая и не меняется! Громкость музыки меняется от настроек громкости телефона.
     public void setTouchEvent(MainMenuActivity menuActivity, MotionEvent event) {
         synchronized (getHolder()) {
-            // Пишем реакцию кнопок
+            // Тут пишем реакцию кнопок
             GameButton touchedButton = this.mainMenu.getTouchedButton(event);
 
             if (touchedButton != null) {
@@ -228,9 +227,11 @@ public class MainMenuView extends SurfaceView {
                         // TODO Затемнение экрана;
 //                        this.background.backgroundDarkerAnimation();
 
+                        // Запуск новой активности FullscreenActivity
                         Intent intent = new Intent(menuActivity, FullscreenActivity.class);
                         menuActivity.startActivity(intent);
 
+                        // Остановка треда и закрывание текущей активности MainMenuActivity
                         this.mainMenuThread.setRunning(false);
                         menuActivity.finish();
 
