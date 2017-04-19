@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
+import android.view.SurfaceView;
 
 import java.util.Arrays;
 
@@ -18,29 +19,40 @@ public class Background {
 
     private static final String TAG = Background.class.getSimpleName();
 
-    public Background (mainView gameView, Bitmap bmp) {
+    public Background () {
+        this.background = null;
+        this.src = null;
+        this.dst = null;
+    }
+
+
+    public Background (SurfaceView View, Bitmap bmp) {
         background = bmp;
         src = new Rect(0, 0, background.getWidth(), background.getHeight());
-        dst = new Rect(0, 0, gameView.getWidth(), gameView.getHeight());
+        dst = new Rect(0, 0, View.getWidth(), View.getHeight());
     }
 
-    public Background(MainMenuView mainMenuView, Bitmap bmp) {
-        this.background = bmp;
-        this.src = new Rect(0, 0, this.background.getWidth(), this.background.getHeight());
-        this.dst = new Rect(0, 0, mainMenuView.getWidth(), mainMenuView.getHeight());
-    }
 
-    public void setBackground(Bitmap newBitmap) {
+    public void setBackgroundSourceOnView(SurfaceView View, Bitmap newBitmap) {
         this.background = newBitmap;
+        this.src = new Rect(0, 0, this.background.getWidth(), this.background.getHeight());
+        this.dst = new Rect(0, 0, View.getWidth(), View.getHeight());
     }
+
 
     public void onDraw (Canvas canvas) {
-        canvas.drawBitmap(
-                this.background,
-                this.src,
-                this.dst,
-                null
-        );
+        try {
+            canvas.drawBitmap(
+                    this.background,
+                    this.src,
+                    this.dst,
+                    null
+            );
+        }
+        catch (NullPointerException e) {
+            Log.e(TAG, "Background unset");
+            e.printStackTrace();
+        }
     }
 
 
@@ -75,6 +87,16 @@ public class Background {
 //        setBackground(BlackBitmap);
 
         Log.i(TAG,"Animation complete");
+    }
+
+
+    public int getWidth() {
+        return this.background.getWidth();
+    }
+
+
+    public int getHeight() {
+        return this.background.getHeight();
     }
 
 }

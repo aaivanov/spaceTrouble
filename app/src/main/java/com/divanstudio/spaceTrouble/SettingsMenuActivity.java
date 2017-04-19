@@ -2,31 +2,27 @@ package com.divanstudio.spaceTrouble;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.os.Bundle;
-
-import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.util.List;
+
 /**
- * Created by WJ_DDA on 08.02.2017.
+ * Created by WJ_DDA on 03.04.2017.
  */
 
-public class MainMenuActivity extends Activity implements OnTouchListener {
-    private MainMenuView mainMenuView;
+public class SettingsMenuActivity extends Activity implements OnTouchListener {
+    private SettingsMenuView settingsMenuView;
 
-    private boolean killing = false;
+    private List<String> Settings = null;
 
-    private static final String TAG = MainMenuActivity.class.getSimpleName();
-
+    private static final String TAG = SettingsMenuActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,20 +30,20 @@ public class MainMenuActivity extends Activity implements OnTouchListener {
         super.onCreate(savedInstanceState);
 
         // Создаём запрос операции с активностью
-        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         // Берём окно-форму нашей активности. Ставим ему "На весь экран"
-        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // Непонятно что это и зачем
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        // Отображаем контент активности на экран
-        this.mainMenuView = new MainMenuView(this);
-        this.setContentView(this.mainMenuView);
+        // Создаём отображение холста в активности
+        this.settingsMenuView = new SettingsMenuView(this);
+        setContentView(settingsMenuView);
 
-        // Назначаем на холст обработчик касаний с Активности MainMenuActivity.
-        this.mainMenuView.setOnTouchListener(this);
+        // Назначаем на холст обработчик касаний с Активности SettingsMenuActivity.
+        this.settingsMenuView.setOnTouchListener(this);
     }
 
 
@@ -55,11 +51,6 @@ public class MainMenuActivity extends Activity implements OnTouchListener {
     protected void onDestroy(){
         Log.i(TAG,"Activity destroying...");
         super.onDestroy();
-
-        if (this.killing) {
-            Log.i(TAG,"Activity send to the deep space...");
-            System.exit(0);
-        }
     }
 
 
@@ -74,11 +65,16 @@ public class MainMenuActivity extends Activity implements OnTouchListener {
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:         // нажатие на тачпад - нажатие на кнопку
-                this.mainMenuView.setTouchEvent(this, event);
+                this.settingsMenuView.setTouchEvent(this, event);
                 break;
         }
 
         return true;
+    }
+
+
+    public void settingsSave() {
+
     }
 
 
@@ -90,10 +86,4 @@ public class MainMenuActivity extends Activity implements OnTouchListener {
 
         finish();
     }
-
-
-    public void setKilling(boolean kill) {
-        this.killing = kill;
-    }
 }
-

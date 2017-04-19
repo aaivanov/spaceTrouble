@@ -79,6 +79,37 @@ public class GameButton extends GameControl {
     }
 
 
+    // Конструктор с ресурсом кнопки, и зоной активности от ресурса
+    public GameButton(
+            Bitmap bitmapSource,
+            int canv_x,
+            int canv_y,
+            int indent_l,
+            int indent_t,
+            int indent_r,
+            int indent_b,
+            String Name,
+            String Reaction
+    ) {
+        super(
+                canv_x,
+                canv_y,
+                bitmapSource.getWidth(),
+                bitmapSource.getHeight(),
+                indent_l,
+                indent_t,
+                indent_r,
+                indent_b
+        );
+
+        this.sourceBitmap = bitmapSource;
+        this.button_id    = bitmapSource.getGenerationId();
+        this.buttonName   = Name;
+
+        this.reaction     = Reaction;
+    }
+
+
     // Конструктор с ресурсом кнопки без отступов
     public GameButton(
             Bitmap bitmapSource,
@@ -99,21 +130,69 @@ public class GameButton extends GameControl {
     }
 
 
-    // Упрощённый Конструктор с ресурсом кнопки
+    // Упрощённый Конструктор кнопки без отступов
     public GameButton(
             Bitmap bitmapSource,
             int canv_x,
             int canv_y,
+            String Name,
             String Reaction
+    ) {
+        super(canv_x, canv_y, bitmapSource.getWidth(), bitmapSource.getHeight());
+
+        this.sourceBitmap = bitmapSource;
+        this.button_id    = bitmapSource.getGenerationId();
+        this.buttonName   = Name;
+
+        this.reaction     = Reaction;
+    }
+
+
+    // Конструктор с ресурсом кнопки без реакции
+    public GameButton(
+            Bitmap bitmapSource,
+            int canv_x,
+            int canv_y,
+            int activity_w,
+            int activity_h,
+            String Name
+    ) {
+        super(canv_x, canv_y, activity_w, activity_h);
+
+        this.sourceBitmap = bitmapSource;
+        this.button_id    = bitmapSource.getGenerationId();
+        this.buttonName   = Name;
+    }
+
+
+    // Упрощённый Конструктор с ресурсом кнопки, именем и реакцией
+    public GameButton(
+            Bitmap bitmapSource,
+            String Name,
+            String Reaction
+    ) {
+        super(0, 0, bitmapSource.getWidth(), bitmapSource.getHeight(), 0, 0, 0 ,0);
+
+        this.sourceBitmap = bitmapSource;
+        this.button_id    = bitmapSource.getGenerationId();
+        this.buttonName   = Name;
+        this.reaction     = Reaction;
+    }
+
+
+    // Упрощённый Конструктор с ресурсом кнопки
+    public GameButton(
+            Bitmap bitmapSource
             ) {
-        super(canv_x, canv_y, bitmapSource.getWidth(), bitmapSource.getHeight(), 0, 0, 0 ,0);
+        super(0, 0, bitmapSource.getWidth(), bitmapSource.getHeight(), 0, 0, 0 ,0);
 
         this.sourceBitmap = bitmapSource;
         this.button_id    = bitmapSource.getGenerationId();
         this.buttonName   = button_id + "_Button";
-
-        this.reaction     = Reaction;
     }
+
+
+    public void initDrawButton () {}
 
 
     // Конструктор с рисованием кнопки
@@ -149,10 +228,9 @@ public class GameButton extends GameControl {
         buttonBrushStyle.setStyle(Paint.Style.STROKE);
 
         // Кнопку рисуем в виде прямоугольника
-        // TODO RectF?
-        Rect controlRect = new Rect(canv_x, canv_y, canv_x + width, canv_y + height);
-
         // Генерируем картинку контрола
+        // TODO Тут предлагают определять битмап до его рисования, чтобы не вызывать при каждом рисовании конструктор объекта Bitmap
+        // TODO Суть в том, что нужно отдельно создать метод init  всё туда перекинуть, а вместо локальных объектов - поля класса
         Bitmap controlBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
 
         // Сгенерированную картинку делаем холстом
@@ -165,9 +243,9 @@ public class GameButton extends GameControl {
         // Если поле buttonText не пусто, то пишем текст в кнопку
         this.buttonText = Text;
 
-        if ((buttonText != null) && !buttonText.equals("")) {
+        if ((this.buttonText != null) && !this.buttonText.equals("")) {
             drawBitmap.drawText(
-                    buttonText,
+                    this.buttonText,
                     canv_x + width / 2,
                     canv_y + height / 2,
                     textBrushStyle
@@ -175,6 +253,7 @@ public class GameButton extends GameControl {
         }
 
         // Конструируем контрол
+        // TODO Не рисует, как то надо ещё передать нарисованное в битмап
         this.sourceBitmap = controlBitmap;
 
         this.button_id = controlBitmap.getGenerationId();
@@ -268,29 +347,37 @@ public class GameButton extends GameControl {
      * Рисование кнопок на экране игры
      */
     public void onDraw(Canvas canvas) {
-        // Какую часть битмапа берём из ресурса
-        // Задаётся 2-мя точками прямоугольника
-        Rect src = new Rect(
-                0,
-                0,
-                sourceBitmap.getWidth(),
-                sourceBitmap.getHeight()
-        );
+        try {
+            // Какую часть битмапа берём из ресурса
+            // Задаётся 2-мя точками прямоугольника
+            // TODO Тут предлагают определять битмап до его рисования, чтобы не вызывать при каждом рисовании конструктор объекта Bitmap
+            // TODO Суть в том, что нужно отдельно создать метод init  всё туда перекинуть, а вместо локальных объектов - поля класса
+            Rect src = new Rect(
+                    0,
+                    0,
+                    this.sourceBitmap.getWidth(),
+                    this.sourceBitmap.getHeight()
+            );
 
-        // Где рисуем битмап
-        // Нужно задать координаты 2-х точек для прямоугольника
-        // Точки берём из super при помощи методов класса GameControl
-        Rect dst = new Rect(
-                this.getX(),
-                this.getY(),
-                this.getX() + this.getActivity_w(),
-                this.getY() + this.getActivity_h()
-        );
+            // Где рисуем битмап
+            // Нужно задать координаты 2-х точек для прямоугольника
+            // Точки берём из super при помощи методов класса GameControl
+            Rect dst = new Rect(
+                    this.getX(),
+                    this.getY(),
+                    this.getX() + this.getActivity_w(),
+                    this.getY() + this.getActivity_h()
+            );
 
 //        Log.d(TAG, "Button '" + this.getName() + "' " + sourceBitmap.getGenerationId() + ": " + this.getX() + " " + this.getY() + " " + sourceBitmap.getWidth() + " " + sourceBitmap.getHeight());
 
-        if (sourceBitmap !=  null) {
-            canvas.drawBitmap(sourceBitmap, src, dst, null);
+            if (this.sourceBitmap != null) {
+                canvas.drawBitmap(this.sourceBitmap, src, dst, null);
+            }
+        }
+        catch (NullPointerException e) {
+            Log.e(TAG, "Button draw error");
+            e.printStackTrace();
         }
     }
 

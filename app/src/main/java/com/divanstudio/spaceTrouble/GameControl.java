@@ -33,16 +33,16 @@ public class GameControl {
          */
 
         // Берём нулевую зону активности
-        this.activity_width = 0;
+        this.activity_width  = 0;
         this.activity_height = 0;
 
         // По умолчанию контрол располагается в верхнем левом углу
         this.draw_point_x = 0;
         this.draw_point_y = 0;
 
-        this.Indents.put("left", 0);
-        this.Indents.put("top", 0);
-        this.Indents.put("right", 0);
+        this.Indents.put("left"  , 0);
+        this.Indents.put("top"   , 0);
+        this.Indents.put("right" , 0);
         this.Indents.put("bottom", 0);
     }
 
@@ -66,9 +66,9 @@ public class GameControl {
             indent_bottom = 0;
         }
 
-        this.Indents.put("left", indent_left);
-        this.Indents.put("top", indent_top);
-        this.Indents.put("right", indent_right);
+        this.Indents.put("left",   indent_left);
+        this.Indents.put("top",    indent_top);
+        this.Indents.put("right",  indent_right);
         this.Indents.put("bottom", indent_bottom);
 
         this.activity_width  = activity_w;
@@ -86,9 +86,9 @@ public class GameControl {
             int activity_w,
             int activity_h
     ) {
-        this.Indents.put("left", 0);
-        this.Indents.put("top", 0);
-        this.Indents.put("right", 0);
+        this.Indents.put("left"  , 0);
+        this.Indents.put("top"   , 0);
+        this.Indents.put("right" , 0);
         this.Indents.put("bottom", 0);
 
         this.activity_width  = activity_w;
@@ -104,17 +104,24 @@ public class GameControl {
     */
     public int getX() { return this.draw_point_x; }
 
+
     public int getY() { return this.draw_point_y; }
+
 
     public int getActivity_w() { return this.activity_width; }
 
+
     public int getActivity_h() { return this.activity_height; }
+
 
     public int getLeftIndent() { return this.Indents.get("left"); }
 
+
     public int getTopIndent() { return this.Indents.get("top"); }
 
+
     public int getRightIndent() { return this.Indents.get("right"); }
+
 
     public int getBottomIndent() { return this.Indents.get("bottom"); }
 
@@ -161,21 +168,21 @@ public class GameControl {
 
     // Передача зоны активности массивом
     public void setActivityZone(ArrayList<Integer> newActivityZone) {
-        this.activity_width = newActivityZone.get(0);
+        this.activity_width  = newActivityZone.get(0);
         this.activity_height = newActivityZone.get(1);
     }
 
 
     // Передача зоны активности по значениям width и height
     public void setActivityZone(int new_width, int new_height) {
-        this.activity_width = new_width;
+        this.activity_width  = new_width;
         this.activity_height = new_height;
     }
 
 
     // Деактивация зоны активности
     public void unsetActivityZone() {
-        this.activity_width = 0;
+        this.activity_width  = 0;
         this.activity_height = 0;
     }
 
@@ -190,21 +197,45 @@ public class GameControl {
                 Log.i(TAG, "Updating Indent " + e.nextElement());
             }
         }
+
+        this.relocate();
     }
 
 
     public void setIndents(int indent_left, int indent_top, int indent_right, int indent_bottom) {
         // Если отступ отрицательный, то ничего не передаём
-        if (indent_left > 0) this.Indents.put("left", indent_left);
-        if (indent_top > 0) this.Indents.put("top", indent_top);
-        if (indent_right > 0) this.Indents.put("right", indent_right);
+        if (indent_left   > 0) this.Indents.put("left",   indent_left);
+        if (indent_top    > 0) this.Indents.put("top",    indent_top);
+        if (indent_right  > 0) this.Indents.put("right",  indent_right);
         if (indent_bottom > 0) this.Indents.put("bottom", indent_bottom);
+        this.relocate();
     }
 
 
-    /*
-     * Апдейт контролов
-     */
+    public void setLeftIndent(int indent_left) {
+        if (indent_left > 0) this.Indents.put("left", indent_left);
+        this.relocate();
+    }
+
+
+    public void setTopIndent(int indent_top) {
+        if (indent_top > 0) this.Indents.put("top", indent_top);
+        this.relocate();
+    }
+
+
+    public void setRightIndent(int indent_right) {
+        if (indent_right > 0) this.Indents.put("right", indent_right);
+        this.relocate();
+    }
+
+
+    public void setBottomIndent(int indent_bottom) {
+        if (indent_bottom > 0) this.Indents.put("bottom", indent_bottom);
+        this.relocate();
+    }
+
+
     // Обновить контрол. Например, когда кнопка меняет рисунок или расположение
     public void updateGameControl(
             mainView newGamePanel,
@@ -266,6 +297,8 @@ public class GameControl {
 
         this.activity_width  = new_activity_w;
         this.activity_height = new_activity_h;
+
+        this.relocate();
     }
 
 
@@ -278,5 +311,19 @@ public class GameControl {
                 && touchEventX < draw_point_x + activity_width
                 && touchEventY > draw_point_y
                 && touchEventY < draw_point_y + activity_height;
+    }
+
+
+    // Переназначает координаты отрисовки контрола, с учётом отступов
+    // Используется при переназначении отступов и т.д.
+    public void relocate() {
+        this.setX(this.getX() + this.Indents.get("left") - this.Indents.get("right"));
+        this.setY(this.getY() + this.Indents.get("top") - this.Indents.get("bottom"));
+    }
+
+    // Переназначает координаты отрисовки контрола в заданные, с учётом отступов
+    public void relocate(int loc_x, int loc_y) {
+        this.setX(loc_x + this.Indents.get("left") - this.Indents.get("right"));
+        this.setY(loc_y + this.Indents.get("top") - this.Indents.get("bottom"));
     }
 }

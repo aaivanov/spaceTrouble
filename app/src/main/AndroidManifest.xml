@@ -11,6 +11,9 @@
         <activity android:name="com.divanstudio.spaceTrouble.FullscreenActivity">
         </activity>
 
+        <activity android:name="com.divanstudio.spaceTrouble.SettingsMenuActivity">
+        </activity>
+
         <activity
             android:name="com.divanstudio.spaceTrouble.MainMenuActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

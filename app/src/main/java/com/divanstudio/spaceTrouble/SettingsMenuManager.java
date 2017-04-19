@@ -4,52 +4,35 @@ import android.graphics.Canvas;
 import android.util.Log;
 
 /**
- * Created by WJ_DDA on 08.02.2017.
+ * Created by WJ_DDA on 03.04.2017.
  */
-public class MainMenuManager extends Thread {
+
+public class SettingsMenuManager extends Thread {
     /** Наша скорость в мс = 10*/
     private static final long FPS = 10;
 
     /** Объект класса GameView*/
-    private MainMenuView menuView;
+    private SettingsMenuView settingsView;
 
     /** Задаем состояние потока*/
     private boolean running = false;
-    private boolean waiting = false;
 
-    private static final String TAG = MainMenuManager.class.getSimpleName();
+    private static final String TAG = SettingsMenuManager.class.getSimpleName();
 
-    public MainMenuManager(MainMenuView view ) {
-        this.menuView = view;
+    public SettingsMenuManager(SettingsMenuView view ) {
+        this.settingsView = view;
     }
 
 
     /** Задание состояния потока*/
     public void setRunning( boolean run ) {
-        this.running = run;
-    }
-
-
-    public void setWaiting( boolean waiting ) {
-        this.waiting = waiting;
+        running = run;
     }
 
 
     /** Действия, выполняемые в потоке */
     @Override
     public void run() {
-        // До начала выполнения кода проверим в ожидании ли тред
-        synchronized (this.menuView.getHolder()) {
-            while (this.waiting) {
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
-                    Log.e(TAG, String.valueOf(e));
-                    e.printStackTrace();
-                }
-            }
-        }
-
         long ticksPS = 1000 / FPS;
 
         final int MAX_FPS = 30;                // желательный fps
@@ -63,17 +46,16 @@ public class MainMenuManager extends Thread {
         int framesSkipped;         // число кадров с невыполненной операцией прорисовки
 
         // Цикл кадра игры
-        Canvas canvas = null;
         sleepTime = 0;
-        while (this.running) {
+
+        while ( running ) {
+            Canvas canvas = null;
+            startTime = System.currentTimeMillis();
             try {
-                startTime = System.currentTimeMillis();
+                canvas = settingsView.getHolder().lockCanvas();
+                synchronized ( settingsView.getHolder() ) {
+                    Log.i(TAG, "synchronized loled");
 
-                if (this.running && this.menuView.getHolder().getSurface().isValid()){
-                    canvas = this.menuView.getHolder().lockCanvas();
-                }
-
-                synchronized ( this.menuView.getHolder() ) {
                     // Считаем старт цикла системным методом currentTimeMillis()
                     startTime = System.currentTimeMillis();
 
@@ -85,8 +67,7 @@ public class MainMenuManager extends Thread {
 
                     // ... и формируем кадр для вывода на экран
                     // Вызываем метод для рисования
-                    this.menuView.drawView(canvas);
-
+                    this.settingsView.drawView(canvas);
                     // Вычисляем время, которое прошло с момента запуска цикла
                     timeDiff = System.currentTimeMillis() - startTime;
 //                    Log.d(TAG,"Got a diff time " + timeDiff + "ms");
@@ -103,9 +84,11 @@ public class MainMenuManager extends Thread {
                         }
                         catch(InterruptedException e){
                             try {
+                                Log.e(TAG, "Have some error:");
                                 Log.e(TAG, String.valueOf(e));
                                 throw e;
                             } catch (InterruptedException e1) {
+                                Log.e(TAG, "Error - 01?");
                                 Log.e(TAG, String.valueOf(e1));
                                 e1.printStackTrace();
                             }
@@ -125,7 +108,7 @@ public class MainMenuManager extends Thread {
                 }
             } finally {
                 if (canvas != null) {
-                    this.menuView.getHolder().unlockCanvasAndPost( canvas );
+                    settingsView.getHolder().unlockCanvasAndPost( canvas );
                 }
             }
 //            sleepTime = ticksPS - ( System.currentTimeMillis() - startTime );
@@ -137,6 +120,7 @@ public class MainMenuManager extends Thread {
 //            } catch ( Exception e ) {}
         }
     }
+
 
     public void threadPause(long time) {
         Log.d(TAG, "Sleeping thread on " + time + "ms...");
@@ -171,4 +155,5 @@ public class MainMenuManager extends Thread {
 
         Log.i(TAG, "Thread successfully stopped");
     }
+
 }
