@@ -6,6 +6,7 @@ package com.divanstudio.spaceTrouble;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+
 public class Player extends Sprite{
     private static volatile Player instance;
     private StateManager state;
@@ -20,6 +21,10 @@ public class Player extends Sprite{
 
     private double ySpeed = 0;
     private double pSpeed;
+
+    // TODO Может нужно добавить состояние игрока, при котором он будет играть звуки
+    private String ambSFX = "";
+    private MediaPlaylist AmbPlaylist = new MediaPlaylist();
 
     private Player () {
         super();
@@ -39,12 +44,16 @@ public class Player extends Sprite{
         return  localInstance;
     }
 
-    public void setPlayerData (mainView gameView, Bitmap origBmp) {
+    public void setPlayerData (mainView gameView, Bitmap origBmp, String ambienceSFX, int sound_res_id) {
         super.setSpriteData(gameView, origBmp, 0, IMG_SIZE_COEFFICIENT, BMP_ROWS, BMP_COLUMNS);
         this.x = gameView.getWidth() / 3;
         this.y = ( gameView.getHeight() - renderHeight) / 2;
         this.pSpeed = gameView.getHeight() / 100 * SPEED_COEFFICIENT;
+
+        this.ambSFX = ambienceSFX;
+        this.AmbPlaylist.addMedia(gameView.getContext(), this.ambSFX, sound_res_id);
     }
+
 
     private void update() {
         if (y >= gameView.getHeight() - renderHeight - ySpeed || y + ySpeed < 0) {
@@ -58,8 +67,14 @@ public class Player extends Sprite{
         if(state.getState() == StateManager.States.PLAY) {
             update();
             super.onDraw(canvas, x, y);
+
+            // Если рисуется спрайт, то он звучит
+            this.playAmbienceSound();
         } else {
             ySpeed = 0;
+
+            // Если не рисуется, то молчит
+            this.stopAmbienceSound();
         }
     }
 
@@ -80,4 +95,8 @@ public class Player extends Sprite{
             return true;
         }
     }
+
+    public void playAmbienceSound () { this.AmbPlaylist.play(this.ambSFX, false, true); }
+
+    public void stopAmbienceSound () { this.AmbPlaylist.stop(this.ambSFX); }
 }

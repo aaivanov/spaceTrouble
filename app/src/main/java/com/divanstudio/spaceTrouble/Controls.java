@@ -1,9 +1,10 @@
 package com.divanstudio.spaceTrouble;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
+
+import com.example.divanstudio.firsttry.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,8 @@ public class Controls {
 
     private List<Control> Controls = new ArrayList<Control>();
     private Enemies meteors;
-    private StateManager state ;
+
+    private StateManager state;
 
     private Player player;
 
@@ -61,24 +63,23 @@ public class Controls {
     };
 
 
-        public Controls (mainView GameView, Bitmap bmp, Enemies meteors) {
-            this.player = Player.getInstance();
-            this.state = StateManager.getInstance();
-            this.meteors = meteors;
+    public Controls (mainView GameView, Bitmap bmp, Enemies meteors) {
+        this.player = Player.getInstance();
+        this.state = StateManager.getInstance();
+        this.meteors = meteors;
 
-            Controls.add(new imgControl(GameView, bmp, 0, 30, 50, moveUp, StateManager.States.PLAY));     //ub move button
-            Controls.add(new imgControl(GameView, bmp, 1, 30, 150, moveDown, StateManager.States.PLAY));  //down move button
+        Controls.add(new imgControl(GameView, bmp, 0, 30, 50, "tap_up", R.raw.menu_push_up, moveUp, StateManager.States.PLAY));     //ub move button
+        Controls.add(new imgControl(GameView, bmp, 1, 30, 150, "tap_down", R.raw.menu_push_down, moveDown, StateManager.States.PLAY));  //down move button
 
-            Controls.add(new textControl(30, 30, 300, 5, "P", pauseGame, StateManager.States.PLAY));      //Pause
-            Controls.add(new textControl(30, 30, 335, 5, "M", goToMenu, StateManager.States.PLAY));       // go to menu
+        Controls.add(new textControl(GameView.getContext(), 30, 30, 300, 5, "P", "submenu_up", R.raw.menu_open_submenu, pauseGame, StateManager.States.PLAY));      //Pause
+        Controls.add(new textControl(GameView.getContext(), 30, 30, 335, 5, "M", "opt_select", R.raw.menu_select_option, goToMenu, StateManager.States.PLAY));       // go to menu
 
-            Controls.add(new textControl(200, 50, 100, 100, "START", startGame, StateManager.States.MENU));
-            Controls.add(new textControl(200, 50, 100, 160, "MUTE", _emptyFunc, StateManager.States.MENU));
-            Controls.add(new textControl(200, 50, 100, 220, "EXIT", exitGame, StateManager.States.MENU));
+        Controls.add(new textControl(GameView.getContext(), 200, 50, 100, 100, "START", "opt_start", R.raw.menu_select_start, startGame, StateManager.States.MENU));
+        Controls.add(new textControl(GameView.getContext(), 200, 50, 100, 160, "MUTE", "opt_select", R.raw.menu_select_option, _emptyFunc, StateManager.States.MENU));
+        Controls.add(new textControl(GameView.getContext(), 200, 50, 100, 220, "EXIT", "opt_select", R.raw.menu_select_option, exitGame, StateManager.States.MENU));
 
-            Controls.add(new textControl(200, 50, 100, 100, "RESUME", startGame, StateManager.States.PAUSE));
-            Controls.add(new textControl(200, 50, 100, 100, "CAME OVER", goToMenu, StateManager.States.GAMEOVER));
-
+        Controls.add(new textControl(GameView.getContext(), 200, 50, 100, 100, "RESUME", "submenu_down", R.raw.menu_close_submenu, startGame, StateManager.States.PAUSE));
+        Controls.add(new textControl(GameView.getContext(), 200, 50, 100, 100, "CAME OVER", "opt_select", R.raw.menu_select_option, goToMenu, StateManager.States.GAMEOVER));
     }
 
     public void onDraw(Canvas canvas) {
@@ -94,6 +95,7 @@ public class Controls {
                 for (Control menuControl : Controls) {
                     if (menuControl.isCollision(event.getX(), event.getY())) {
                         menuControl.runCallBack();
+                        menuControl.playCollisionSound();
                     }
                 }
                 break;

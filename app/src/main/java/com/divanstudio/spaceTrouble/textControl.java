@@ -1,5 +1,6 @@
 package com.divanstudio.spaceTrouble;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -14,7 +15,7 @@ public class textControl extends Control {
     private int testPosX;
     private int textPosY;
 
-    public textControl (int width, int height, int canvX, int canvY, String text, Function callBack, StateManager.States existedState) {
+    public textControl (Context context, int width, int height, int canvX, int canvY, String text, String soundName, int sound_id, Function callBack, StateManager.States existedState) {
         this.width = width;
         this.height = height;
         this.canvX = canvX;
@@ -25,6 +26,10 @@ public class textControl extends Control {
         this.paint = new Paint();
         this.text = text;
 
+        this.collisionSound = soundName;
+        this.collisionSFX = new MediaPlaylist();
+        this.collisionSFX.addMedia(context, soundName, sound_id);
+
         this.paint.setColor(Color.RED);
         this.paint.setStrokeWidth(0);
         this.paint.setStyle(Paint.Style.STROKE);
@@ -32,12 +37,12 @@ public class textControl extends Control {
         this.textPosY = (int) ((height / 2) - ((paint.descent() + paint.ascent()) / 2)) ;
     }
 
-    public textControl (int width, int height, int canvX, int canvY, String text, Function callBack) {
-        this(width, height, canvX, canvY, text, callBack, null);
+    public textControl (Context context, int width, int height, int canvX, int canvY, String text, String soundName, int sound_id, Function callBack) {
+        this(context, width, height, canvX, canvY, text, soundName, sound_id, callBack, null);
     }
 
-    public textControl (int width, int height, int canvX, int canvY, String text) {
-        this (width, height, canvX, canvY, text, null);
+    public textControl (Context context, int width, int height, int canvX, int canvY, String text, String soundName, int sound_id) {
+        this (context, width, height, canvX, canvY, text, soundName, sound_id, null);
     }
 
     @Override

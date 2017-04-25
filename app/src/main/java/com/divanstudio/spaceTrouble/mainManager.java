@@ -4,6 +4,8 @@ package com.divanstudio.spaceTrouble;
  * Created by aaivanov on 11/29/15.
  */
 import android.graphics.Canvas;
+import android.util.Log;
+
 public class mainManager extends Thread {
     /** Наша скорость в мс = 10*/
     static final long FPS = 10;
@@ -23,6 +25,8 @@ public class mainManager extends Thread {
     public void setRunning( boolean run ) {
         running = run;
     }
+
+    private static final String TAG = mainManager.class.getSimpleName();
 
     /** Действия, выполняемые в потоке */
     @Override
@@ -50,7 +54,7 @@ public class mainManager extends Thread {
                 synchronized ( view.getHolder() ) {
                     // Считаем старт цикла системным методом currentTimeMillis()
                     startTime = System.currentTimeMillis();
-                     // Обнуляем счетчик пропущенных кадров
+                    // Обнуляем счетчик пропущенных кадров
                     framesSkipped = 0;
 
                     // Обновляем состояние игры...
@@ -58,7 +62,11 @@ public class mainManager extends Thread {
 
                     // ... и формироваться кадр для вывода на экран
                     // Вызываем метод для рисования
-                    view.onDraw(canvas);
+                    this.view.onDraw(canvas);
+
+                    // Вызываем метод для проигрывания музыки
+                    this.view.playMusic();
+
                     // Вычисляем время, которое прошло с момента запуска цикла
                     timeDiff = System.currentTimeMillis() - startTime;
 //                    Log.d(TAG,"Got a diff time " + timeDiff + "ms");
@@ -99,12 +107,31 @@ public class mainManager extends Thread {
                 }
             }
 //            sleepTime = ticksPS - ( System.currentTimeMillis() - startTime );
-//            try {	
+//            try {
 //                if ( sleepTime > 0 )
 //                    sleep( sleepTime );
 //                else
 //                    sleep( 10 );
 //            } catch ( Exception e ) {}
         }
+    }
+
+    public void kill() {
+        Log.i(TAG, "Stopping Thread...");
+
+        this.setRunning(false);
+
+        boolean retry = true;
+        while (retry) {
+            try {
+                this.join();
+                retry = false;
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Stopping thread error");
+                e.printStackTrace();
+            }
+        }
+
+        Log.i(TAG, "Thread successfully stopped");
     }
 }

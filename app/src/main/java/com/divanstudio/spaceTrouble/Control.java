@@ -19,6 +19,10 @@ public abstract class Control {
 
     protected StateManager state = StateManager.getInstance();
 
+    // TODO можно использовать только resource_id
+    protected String collisionSound = "";
+    protected MediaPlaylist collisionSFX = new MediaPlaylist();
+
     public Control () {}
 
     public boolean isCollision(float touchEventX, float touchEventY) {
@@ -29,10 +33,16 @@ public abstract class Control {
                 && touchEventY < canvY + height;
         return isCollision ;
     }
+
     protected abstract void onDraw(Canvas canvas);
 
     public void runCallBack () {
         if ( callBack != null ) { callBack.run(null); }
     }
 
+    public void playCollisionSound () {
+        if (collisionSound.length() > 0) {
+            this.collisionSFX.play(this.collisionSound, true);
+        }
+    }
 }

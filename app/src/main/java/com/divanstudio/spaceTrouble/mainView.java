@@ -1,6 +1,5 @@
 package com.divanstudio.spaceTrouble;
 
-import android.media.MediaPlayer;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -11,8 +10,8 @@ import android.graphics.Canvas;
 import com.example.divanstudio.firsttry.R;
 
 /**
-* Created by aaivanov on 11/29/15.
-*/
+ * Created by aaivanov on 11/29/15.
+ */
 
 public class mainView extends SurfaceView  {
     private SurfaceHolder holder;
@@ -23,7 +22,9 @@ public class mainView extends SurfaceView  {
     private Player player;
     private Background background;
 
-    private MediaPlayer mediaPlayer;
+    private StateManager State;
+    private MediaPlaylist MusicPlaylist = new MediaPlaylist();
+
     private int sBackground;
 
     public mainView(Context context) {
@@ -32,30 +33,22 @@ public class mainView extends SurfaceView  {
         player = Player.getInstance();
         holder = getHolder();
 
-        mediaPlayer = MediaPlayer.create(context, R.raw.gameplay);
-        mediaPlayer.setLooping(true); // Set looping
-        mediaPlayer.setVolume(100,100);
+        this.State = StateManager.getInstance();
 
         this.holder.addCallback (new SurfaceHolder.Callback() {
             public void surfaceDestroyed (SurfaceHolder holder) {
-                boolean retry = true;
-                gameLoopThread.setRunning (false);
-                while (retry) {
-                    try {
-                        gameLoopThread.join();
-                        retry = false;
-                    } catch (InterruptedException e) {
-                    }
-                }
-                mediaPlayer.stop();
-                mediaPlayer.release();
+                // Убиваем тред
+                gameLoopThread.kill();
+
+                // Удаляем менеджер
+                MusicPlaylist.clear();
             }
 
             public void surfaceCreated(SurfaceHolder holder) {
+                initMainViewRes();
+
                 gameLoopThread.setRunning(true);
                 gameLoopThread.start();
-                initMainViewRes();
-                mediaPlayer.start();
             }
 
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -64,10 +57,20 @@ public class mainView extends SurfaceView  {
     }
 
     public void initMainViewRes() {
-        player.setPlayerData(this, BitmapFactory.decodeResource(getResources(), R.drawable.player));
+        // Инициализация музыки
+        this.MusicPlaylist.addMedia(this.getContext(), "main_menu", R.raw.main_menu);
+        this.MusicPlaylist.addMedia(this.getContext(), "asteroids", R.raw.asteroids);
 
+        // Инициализация игрока
+        player.setPlayerData(this, BitmapFactory.decodeResource(getResources(), R.drawable.player), "ship_engine", R.raw.ship_eng_idling_big_loop);
+
+        // Инициализация вражеских объектов
         meteors = new Enemies(this, BitmapFactory.decodeResource(getResources(), R.drawable.cut_map_pixelize));
+
+        // Инициализация контролов
         controls = new Controls(this, BitmapFactory.decodeResource(getResources(), R.drawable.arrows ), meteors);
+
+        // Инициализация бэкграунда
         background = new Background(this, BitmapFactory.decodeResource(getResources(), R.drawable.bckgrnd_1280_720_pixelize));
     }
 
@@ -76,6 +79,25 @@ public class mainView extends SurfaceView  {
         if (meteors != null) meteors.onDraw(canvas);
         if (player != null) player.onDraw(canvas);
         if (controls != null) controls.onDraw(canvas);
+    }
+
+    protected void playMusic() {
+        if (this.State.getState() == StateManager.States.MENU) {
+            this.MusicPlaylist.play("main_menu", false, true, true);
+        }
+
+        if (this.State.getState() == StateManager.States.PLAY) {
+            this.MusicPlaylist.play("asteroids", false, true, true);
+        }
+
+        if (this.State.getState() == StateManager.States.GAMEOVER) {
+            // TODO this.MusicPlaylist.play("GameOver", false, true, true);
+            this.MusicPlaylist.stop();
+        }
+
+        if (this.State.getState() == StateManager.States.PAUSE) {
+            this.MusicPlaylist.pause();
+        }
     }
 
     public void setTouchEvent(MotionEvent event) {
